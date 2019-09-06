@@ -1,0 +1,3 @@
+[submodule "lib/maker-otc"]
+	path = lib/maker-otc
+	url = https://github.com/kkostalkowicz/maker-otc
