@@ -20,8 +20,10 @@ contract OasisLiquidityProviderTest is DSTest {
     }
 
     function testBasic() public {
-        weth.mint(address(olp), 2*3 ether);
-        dai.mint(address(olp), 2*1440 ether);
+        weth.mint(address(this), 2*3 ether);
+        dai.mint(address(this), 2*1440 ether);
+        weth.approve(address(olp), uint(-1));
+        dai.approve(address(olp), uint(-1));
         olp.linearOffers(
             MarketLike(address(otc)), TokenLike(address(weth)), TokenLike(address(dai)),
             500 ether, 10 ether, 2 ether, 3
