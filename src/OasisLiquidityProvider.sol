@@ -5,7 +5,7 @@ contract TokenLike {
     function transferFrom(address src, address dst, uint wad) public returns (bool);
 }
 contract MarketLike {
-    function offer(uint pay_amt, TokenLike pay_gem, uint buy_amt, TokenLike buy_gem) public returns (uint);
+    function offer(uint pay_amt, TokenLike pay_gem, uint buy_amt, TokenLike buy_gem, uint pos) public returns (uint);
 }
 
 contract OasisLiquidityProvider {
@@ -18,7 +18,7 @@ contract OasisLiquidityProvider {
         MarketLike otc, TokenLike baseToken, TokenLike quoteToken, uint midPrice, uint delta, uint baseAmount, uint count
     ) public {
         require(baseToken.transferFrom(msg.sender, address(this), baseAmount * count), "cannot-fetch-base-token");
-        require(quoteToken.transferFrom(msg.sender, address(this), baseAmount * count / ONE * (midPrice - delta * (count+1)/2)), "cannot-fetch-quote-token");
+        require(quoteToken.transferFrom(msg.sender, address(this), baseAmount * count * (midPrice - delta * (count+1)/2) / ONE), "cannot-fetch-quote-token");
         baseToken.approve(address(otc), uint(-1));
         quoteToken.approve(address(otc), uint(-1));
         linearOffersPair(otc, baseToken, quoteToken, midPrice*baseAmount/ONE, -int(delta*baseAmount/ONE), baseAmount, 0, count);
@@ -31,7 +31,8 @@ contract OasisLiquidityProvider {
         for (uint i = 1; i <= count; i += 1) {
             otc.offer(
                 uint(int(midPriceBuy) + int(i) * deltaBuy), payToken,
-                uint(int(midPriceSell) + int(i) * deltaSell), buyToken
+                uint(int(midPriceSell) + int(i) * deltaSell), buyToken,
+                0
             );
         }
     }

@@ -20,13 +20,13 @@ contract OasisLiquidityProviderTest is DSTest {
     }
 
     function testBasic() public {
-        weth.mint(address(this), 2*3 ether);
-        dai.mint(address(this), 2*1440 ether);
+        weth.mint(address(this), 0.1*3 ether);
+        dai.mint(address(this), 0.1*1440 ether);
         weth.approve(address(olp), uint(-1));
         dai.approve(address(olp), uint(-1));
         olp.linearOffers(
             MarketLike(address(otc)), TokenLike(address(weth)), TokenLike(address(dai)),
-            500 ether, 10 ether, 2 ether, 3
+            500 ether, 10 ether, 0.1 ether, 3
         );
         uint pay_amt;
         ERC20 pay_gem;
@@ -34,39 +34,42 @@ contract OasisLiquidityProviderTest is DSTest {
         ERC20 buy_gem;
 
         (pay_amt, pay_gem, buy_amt, buy_gem) = otc.getOffer(1);
-        assertEq(pay_amt, 2*490 ether);
+        assertEq(pay_amt, 0.1*490 ether);
         assertEq(address(pay_gem), address(dai));
-        assertEq(buy_amt, 2*1 ether);
+        assertEq(buy_amt, 0.1*1 ether);
         assertEq(address(buy_gem), address(weth));
 
         (pay_amt, pay_gem, buy_amt, buy_gem) = otc.getOffer(2);
-        assertEq(pay_amt, 2*480 ether);
+        assertEq(pay_amt, 0.1*480 ether);
         assertEq(address(pay_gem), address(dai));
-        assertEq(buy_amt, 2*1 ether);
+        assertEq(buy_amt, 0.1*1 ether);
         assertEq(address(buy_gem), address(weth));
 
         (pay_amt, pay_gem, buy_amt, buy_gem) = otc.getOffer(3);
-        assertEq(pay_amt, 2*470 ether);
+        assertEq(pay_amt, 0.1*470 ether);
         assertEq(address(pay_gem), address(dai));
-        assertEq(buy_amt, 2*1 ether);
+        assertEq(buy_amt, 0.1*1 ether);
         assertEq(address(buy_gem), address(weth));
 
         (pay_amt, pay_gem, buy_amt, buy_gem) = otc.getOffer(4);
-        assertEq(pay_amt, 2*1 ether);
+        assertEq(pay_amt, 0.1*1 ether);
         assertEq(address(pay_gem), address(weth));
-        assertEq(buy_amt, 2*510 ether);
+        assertEq(buy_amt, 0.1*510 ether);
         assertEq(address(buy_gem), address(dai));
 
         (pay_amt, pay_gem, buy_amt, buy_gem) = otc.getOffer(5);
-        assertEq(pay_amt, 2*1 ether);
+        assertEq(pay_amt, 0.1*1 ether);
         assertEq(address(pay_gem), address(weth));
-        assertEq(buy_amt, 2*520 ether);
+        assertEq(buy_amt, 0.1*520 ether);
         assertEq(address(buy_gem), address(dai));
 
         (pay_amt, pay_gem, buy_amt, buy_gem) = otc.getOffer(6);
-        assertEq(pay_amt, 2*1 ether);
+        assertEq(pay_amt, 0.1*1 ether);
         assertEq(address(pay_gem), address(weth));
-        assertEq(buy_amt, 2*530 ether);
+        assertEq(buy_amt, 0.1*530 ether);
         assertEq(address(buy_gem), address(dai));
+
+        assertEq(otc.getBestOffer(weth, dai), 4);
+        assertEq(otc.getBestOffer(dai, weth), 1);
     }
 }
