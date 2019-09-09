@@ -72,4 +72,23 @@ contract OasisLiquidityProviderTest is DSTest {
         assertEq(otc.getBestOffer(weth, dai), 4);
         assertEq(otc.getBestOffer(dai, weth), 1);
     }
+
+    function testCancel() public {
+        weth.mint(address(this), 0.1*1 ether);
+        dai.mint(address(this), 0.1*490 ether);
+        weth.approve(address(olp), uint(-1));
+        dai.approve(address(olp), uint(-1));
+        olp.linearOffers(
+            MarketLike(address(otc)), TokenLike(address(weth)), TokenLike(address(dai)),
+            500 ether, 10 ether, 0.1 ether, 1
+        );
+        assertEq(weth.balanceOf(address(otc)), 0.1*1 ether);
+        assertEq(dai.balanceOf(address(otc)), 0.1*490 ether);
+
+        olp.cancelMyOffers(
+            MarketLike(address(otc)), TokenLike(address(weth)), TokenLike(address(dai))
+        );
+        assertEq(weth.balanceOf(address(this)), 0.1*1 ether);
+        assertEq(dai.balanceOf(address(this)), 0.1*490 ether);
+    }
 }

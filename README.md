@@ -25,3 +25,13 @@ Takes funds from sender:
 - `quoteToken`: `baseAmount` \* `count` \* (`midPrice` - `delta` \* (`count`+1)/2)
 
 The intention is that no new offers match when adding. It is up to the caller to ensure that.
+
+## cancelMyOffers
+
+```
+function cancelMyOffers(MarketLike otc, TokenLike baseToken, TokenLike quoteToken) public
+```
+
+Cancels all offers created by the sender for trading `baseToken` and `quoteToken` to market `otc`.
+
+Returns all funds to the sender.
